@@ -14,7 +14,7 @@ Lahav Lipson, Zachary Teed and Jia Deng<br/>
 }
 ```
 
-<img src="RAFTStereo.png">
+<img src="resources/assets/RAFTStereo.png">
 
 <img src="https://media.giphy.com/media/nYqxbmAdGDgVJ2lQYK/giphy.gif" alt="drawing" width="400"/> <img src="https://media.giphy.com/media/y8hD5SNh1QHc8yCGBv/giphy.gif" alt="drawing" width="400"/>
 
@@ -111,7 +111,7 @@ To save the disparity values as `.npy` files, run any of the demos with the `--s
 
 If the camera intrinsics and camera baseline are known, disparity predictions can be converted to depth values using
 
-<img src="depth_eq.png" width="320">
+<img src="resources/assets/depth_eq.png" width="320">
 
 Note that the units of the focal length are _pixels_ not millimeters. (cx1-cx0) is the x-difference of principal points.
 
