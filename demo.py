@@ -1,3 +1,4 @@
+import os.path
 import sys
 sys.path.append('core')
 
@@ -11,6 +12,7 @@ from raft_stereo import RAFTStereo
 from utils.utils import InputPadder
 from PIL import Image
 from matplotlib import pyplot as plt
+import cv2
 
 
 DEVICE = 'cuda'
@@ -28,15 +30,18 @@ def demo(args):
     model.to(DEVICE)
     model.eval()
 
-    output_directory = Path(args.output_directory)
-    output_directory.mkdir(exist_ok=True)
+    rgb_out_dir = Path(os.path.join(args.output_directory, "color"))
+    flow_out_dir = Path(os.path.join(args.output_directory, "mono"))
+    rgb_out_dir.mkdir(exist_ok=True)
+    flow_out_dir.mkdir(exist_ok=True)
 
     with torch.no_grad():
         left_images = sorted(glob.glob(args.left_imgs, recursive=True))
         right_images = sorted(glob.glob(args.right_imgs, recursive=True))
-        print(f"Found {len(left_images)} images. Saving files to {output_directory}/")
-
+        print(f"Found {len(left_images)} images. Saving files to {args.output_directory}/")
+        idx = 0
         for (imfile1, imfile2) in tqdm(list(zip(left_images, right_images))):
+            print(idx)
             image1 = load_image(imfile1)
             image2 = load_image(imfile2)
 
@@ -47,10 +52,9 @@ def demo(args):
             flow_up = padder.unpad(flow_up).squeeze()
 
             file_stem = imfile1.split('/')[-2]
-            if args.save_numpy:
-                np.save(output_directory / f"{file_stem}.npy", flow_up.cpu().numpy().squeeze())
-            plt.imsave(output_directory / f"{file_stem}.png", -flow_up.cpu().numpy().squeeze(), cmap='jet')
 
+            plt.imsave(rgb_out_dir / f"{file_stem}.png", flow_up.cpu().numpy().squeeze(), cmap='viridis')
+            cv2.imwrite(str(flow_out_dir / f"{file_stem}.tif"), flow_up.cpu().numpy().squeeze())
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
